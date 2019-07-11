@@ -1,0 +1,178 @@
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: top;
+    height: 100%;
+    width: 100%;
+}
+
+/* start */
+
+#start {
+    width: inherit;
+    height: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#play {
+    width: 20%;
+    height: 10%;
+    transform: translateY(-100%);
+    cursor: pointer;
+    font-size: 20px;
+    color: blue;
+}
+
+#play:hover {
+    box-shadow: 0 0 50px 10px rgba(0,0,0,0.06);
+}
+
+/* choice fighters */
+
+#choiceFighters h2 {
+    text-align: center;
+}
+
+#confirmChoice {
+    display: block;
+    margin: 3% auto;
+    box-sizing: border-box;
+    padding: 1%;
+    cursor: pointer;
+    color: blue;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.fighters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    flex-wrap: wrap;
+    padding: 0 15px;
+}
+
+.fighterWrapper input {
+    display: block;
+    margin: 5% auto;
+    width: 16px;
+    height: 16px;
+    background-color: aqua;
+    cursor: pointer;
+}
+
+.fighterWrapper input:hover {
+    box-shadow: 0 0 15px aqua;
+}
+
+.fighter {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.fighter input {
+    margin: 2% auto 0;
+}
+
+.fighter:hover {
+    box-shadow: 0 0 50px 10px rgba(0,0,0,0.06);
+    cursor: pointer;
+}
+
+.name {
+    align-self: center;
+    font-size: 21px;
+    margin-top: 20px;
+}
+
+.fighter-image {
+    height: 260px;
+}
+
+#loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    background: rgba(255, 255, 255, 0.7);
+    visibility: hidden;
+}
+
+/* fight */
+
+#fight {
+    width: 100%;
+}
+
+#fight > div {
+    width: 70%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 4px;
+    box-shadow: 0px 0px 15px silver;
+}
+
+.fightersInfo {
+    margin: 1% auto 2%;
+}
+
+.healthWrapper {
+    width: 200px;
+    height: 25px;
+    background-color: rgba(0, 128, 0, .1);
+    border-radius: 4px;
+}
+
+.healthLine {
+    width: inherit;
+    height: inherit;
+    max-width: 200px;
+    border-radius: inherit;
+    background-color: rgb(0, 128, 0);
+}
+
+.value {
+    color:blue;
+}
+
+.battleArea {
+    margin: 0 auto 2%;
+    box-sizing: border-box;
+    padding: 1%;
+}
+
+.battleArea img {
+    display: block;
+    transition: all 1s;
+}
+
+.fighter2 {
+    transform: scaleX(-1);    
+}
+
+.fighter1Move {
+    transform: translateX(100%);
+}
+
+.fighter2Move {
+    transform: scaleX(-1) translateX(100%);
+}
