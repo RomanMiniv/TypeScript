@@ -1,6 +1,7 @@
 const presets = [
   [
     "@babel/preset-env",
+    "@babel/preset-typescript",
     {
       targets: {
         firefox: "60",
@@ -11,8 +12,8 @@ const presets = [
 ];
 
 const plugins = ["@babel/plugin-proposal-class-properties"];
-  
-module.exports = { 
-  presets, 
-  plugins 
+
+module.exports = {
+  presets,
+  plugins
 };

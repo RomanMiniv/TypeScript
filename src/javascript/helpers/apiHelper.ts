@@ -1,6 +1,6 @@
 const API_URL = 'https://bsa--nodejs.herokuapp.com/';
 
-function callApi(endpoind, method) {
+function callApi(endpoind: any, method: any) {
   const url = API_URL + endpoind;
   const options = {
     method
