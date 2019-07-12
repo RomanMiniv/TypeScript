@@ -12,22 +12,26 @@ export interface IFighter {
 }
 
 class Fighter implements IFighter {
-    private data: IFighterDetails;
+    private _data: IFighterDetails;
 
-    constructor(fighterDetails: IFighterDetails) {
-        this.data = { ...fighterDetails };
+    public constructor(fighterDetails: IFighterDetails) {
+        this._data = { ...fighterDetails };
     }
 
-    getHitPower(): number {
+    public get data() {
+        return this._data;
+    }
+
+    public getHitPower(): number {
         const criticalHitChance: number = getRandomInt(1, 2);
-        const power: number = this.data.attack * criticalHitChance;
+        const power: number = this._data.attack * criticalHitChance;
 
         return power;
     }
 
-    getBlockPower(): number {
+    public getBlockPower(): number {
         const dodgeChance: number = getRandomInt(1, 2);
-        const power: number = this.data.defense * dodgeChance;
+        const power: number = this._data.defense * dodgeChance;
 
         return power;
     }

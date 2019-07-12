@@ -1,13 +1,13 @@
 import View from './view';
 import FightersView from './fightersView';
 import { fighterService, IFighterData } from './services/fightersService';
-import { IFighter } from './fighter';
+import Fighter from './fighter';
 import Fight from './fight';
 import Swal from 'sweetalert2';
 
 class App {
 	private game: any;
-	public fighters: IFighter[];
+	public fighters: Fighter[];
 
 	constructor() {
 		this.startApp();
@@ -105,7 +105,7 @@ class App {
 				}
 
 				for (let i = 0; i < selectedFighters.length; i++) {
-					const fighter: IFighter = await fightersView.getFighter(selectedFighters[i]);
+					const fighter: Fighter = await fightersView.getFighter(selectedFighters[i]);
 					this.fighters.push(fighter);
 				}
 
@@ -141,7 +141,7 @@ class App {
 		}
 	}
 
-	fight(fighters: IFighter[]) {
+	fight(fighters: Fighter[]) {
 		const fight = new Fight(fighters);
 		fight.start();
 	}

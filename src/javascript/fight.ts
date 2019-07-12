@@ -1,29 +1,32 @@
 import View from './view';
-import { IFighter } from './fighter';
+import Fighter from './fighter';
 import Swal from 'sweetalert2';
 
 class Fight {
-    fighters: IFighter[];
+    fighters: Fighter[];
     moveFightersStage: boolean;
     stagePlayer: boolean;
-
-    constructor(fighters: IFighter[]) {
+    
+    constructor(fighters: Fighter[]) {
         this.fighters = fighters;
         this.moveFightersStage = true; // true - fight, false - no actions
         this.stagePlayer = false;   // false(0) - first player, true(1) - second player
 
-        this.fighterElement1;
-        this.fighterElement2;
+        // this.fighterElement1;
+        // this.fighterElement2;
     }
+
+    static fighterElement1: HTMLElement;
+    static fighterElement2: HTMLElement;
 
     start() {
         try {
             this.setScene();
-            this.fighterElement1.addEventListener('transitionend', () => this.fight());
+            Fight.fighterElement1.addEventListener('transitionend', () => this.fight());
             this.update();
 
             const timerId = setInterval(() => {
-                this.moveFighters(this.fighterElement1, this.fighterElement2);
+                this.moveFighters(Fight.fighterElement1, Fight.fighterElement2);
 
                 if (this.fighters[0].data.health <= 0 || this.fighters[1].data.health <= 0) {
                     clearInterval(timerId);
@@ -52,8 +55,8 @@ class Fight {
     }
 
     setScene() {
-        const fightersInfo = document.querySelector('.fightersInfo');
-        const battleArea = document.querySelector('.battleArea');
+        const fightersInfo = document.querySelector('.fightersInfo') as HTMLElement;
+        const battleArea = document.querySelector('.battleArea') as HTMLElement;
 
         const view = new View();
 
@@ -69,7 +72,7 @@ class Fight {
             const healthLine = view.createElement({ tagName: 'div', className: `healthLine healthLine${index + 1}` });
             const HP = view.createElement({ tagName: 'div', className: `HP HP${index + 1}` });
 
-            const valueHealth = value.cloneNode(false);
+            const valueHealth: any = value.cloneNode(false);
             healthWrapper.appendChild(healthLine);
             valueHealth.textContent = fighter.data.health;
             HP.textContent = 'health: ';
@@ -82,14 +85,14 @@ class Fight {
 
             // set attack
             const attack = view.createElement({ tagName: 'div', className: 'attack' });
-            const valueAttack = value.cloneNode(false);
+            const valueAttack: any = value.cloneNode(false);
             valueAttack.textContent = fighter.data.attack;
             attack.textContent = 'attack: ';
             attack.appendChild(valueAttack);
 
             // set defense
             const defense = view.createElement({ tagName: 'div', className: 'defense' });
-            const valueDefense = value.cloneNode(false);
+            const valueDefense: any = value.cloneNode(false);
             valueDefense.textContent = fighter.data.defense;
             defense.textContent = 'defense: ';
             defense.appendChild(valueDefense);
@@ -106,11 +109,11 @@ class Fight {
             battleArea.appendChild(img);
         });
 
-        this.fighterElement1 = document.querySelector(".fighter1");
-        this.fighterElement2 = document.querySelector(".fighter2");
+        Fight.fighterElement1 = document.querySelector(".fighter1") as HTMLElement;
+        Fight.fighterElement2 = document.querySelector(".fighter2") as HTMLElement;
     }
 
-    moveFighters(fighterElement1, fighterElement2) {
+    moveFighters(fighterElement1: HTMLElement, fighterElement2: HTMLElement) {
         fighterElement1.classList.toggle('fighter1Move');
         fighterElement2.classList.toggle('fighter2Move');
 
@@ -118,11 +121,11 @@ class Fight {
     }
 
     update() {
-        const fightersHP = [document.querySelector(".HP1 .value"), document.querySelector(".HP2 .value")];
-        const fightersHealthLine = [document.querySelector(".healthLine1"), document.querySelector(".healthLine2")];
+        const fightersHP: any = [document.querySelector(".HP1 .value"), document.querySelector(".HP2 .value")];
+        const fightersHealthLine: any = [document.querySelector(".healthLine1"), document.querySelector(".healthLine2")];
         
-        const healthWrapper = document.querySelector(".healthWrapper");
-        const healthWrapperWidth = parseInt(getComputedStyle(healthWrapper).width);
+        const healthWrapper = document.querySelector(".healthWrapper") as HTMLElement;
+        const healthWrapperWidth = parseInt(<string>getComputedStyle(healthWrapper).width);
         
         const widthRatio = healthWrapperWidth / 100;
 
