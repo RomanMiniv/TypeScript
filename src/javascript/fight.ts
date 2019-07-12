@@ -1,8 +1,13 @@
 import View from './view';
+import { IFighter } from './fighter';
 import Swal from 'sweetalert2';
 
 class Fight {
-    constructor(fighters) {
+    fighters: IFighter[];
+    moveFightersStage: boolean;
+    stagePlayer: boolean;
+
+    constructor(fighters: IFighter[]) {
         this.fighters = fighters;
         this.moveFightersStage = true; // true - fight, false - no actions
         this.stagePlayer = false;   // false(0) - first player, true(1) - second player

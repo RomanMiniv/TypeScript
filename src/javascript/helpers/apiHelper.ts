@@ -1,18 +1,37 @@
-const API_URL = 'https://bsa--nodejs.herokuapp.com/';
+// const API_URL = 'https://bsa--nodejs.herokuapp.com/';
 
-function callApi(endpoind: any, method: any) {
-  const url = API_URL + endpoind;
-  const options = {
-    method
-  };
+// function callApi(endpoind: any, method: any) {
+//   const url = API_URL + endpoind;
+//   const options = {
+//     method
+//   };
 
-  return fetch(url, options)
-    .then(response =>
-      response.ok ? response.json() : Promise.reject(Error('Failed to load'))
-    )
-    .catch(error => {
-      throw error;
-    });
+//   return fetch(url, options)
+//     .then(response =>
+//       response.ok ? response.json() : Promise.reject(Error('Failed to load'))
+//     )
+//     .catch(error => {
+//       throw error;
+//     });
+// }
+
+// export { callApi }
+
+const API_URL: string = 'https://bsa--nodejs.herokuapp.com/';
+
+function callApi(endpoind: string, method: string) {
+    const url: string = API_URL + endpoind;
+    const options = {
+        method
+    };
+
+    return fetch(url, options)
+        .then(response =>
+            response.ok ? response.json() : Promise.reject(Error('Failed to load'))
+        )
+        .catch(error => {
+            throw error;
+        });
 }
 
 export { callApi }

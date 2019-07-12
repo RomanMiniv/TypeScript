@@ -1,46 +1,46 @@
 import View from './view';
 import FighterView from './fighterView';
-import { fighterService } from './services/fightersService';
-import Fighter from './fighter'; 
+import { fighterService, IFighterData, IFighterDetails } from './services/fightersService';
+import Fighter from './fighter';
 import Swal from 'sweetalert2';
 
 class FightersView extends View {
-  constructor(fighters) {
-    super();
-    
-    this.handleClick = this.handleFighterClick.bind(this);
-    this.createFighters(fighters);
-  }
+	fightersDetailsMap = new Map;
+	handleClick: (event: any, fighter: IFighterData) => Promise<void>;
+	constructor(fighters: IFighterData[]) {
+		super();
 
-  fightersDetailsMap = new Map();
+		this.handleClick = this.handleFighterClick.bind(this);
+		this.createFighters(fighters);		
+	}
 
-  createFighters(fighters) {
-    const fighterElements = fighters.map(fighter => {
-      const fighterView = new FighterView(fighter, this.handleClick);
-      return fighterView.element;
-    });
+	createFighters(fighters: IFighterData[]) {
+		const fighterElements = fighters.map(fighter => {
+			const fighterView = new FighterView(fighter, this.handleClick);
+			return fighterView.element;
+		});
 
-    this.element = this.createElement({ tagName: 'div', className: 'fighters' });
-    this.element.append(...fighterElements);
-  }
+		this.element = this.createElement({ tagName: 'div', className: 'fighters' });
+		this.element.append(...fighterElements);
+	}
 
-  async setFighterDetails(_id) {
-    if (!this.fightersDetailsMap.has(_id)) {
-      const fighterDetails = await fighterService.getFighterDetails(_id);
-      this.fightersDetailsMap.set(_id, fighterDetails);
-    }
-  }
+	async setFighterDetails(_id: number | string) {
+		if (!this.fightersDetailsMap.has(_id)) {
+			const fighterDetails: IFighterDetails = await fighterService.getFighterDetails(_id);
+			this.fightersDetailsMap.set(_id, fighterDetails);
+		}
+	}
 
-  async handleFighterClick(event, fighter) {
-    await this.setFighterDetails(fighter._id);
+	async handleFighterClick(event: any, fighter: IFighterData): Promise<void> {
+		await this.setFighterDetails(fighter._id);
 
-    const currentFighter = this.fightersDetailsMap.get(fighter._id);
-    
-    const MAX_VALUE = 100;
-    Swal.fire({
-      type: 'info',
-      title: 'Fighter settings',
-      html: `<div class="setupArea">
+		const currentFighter = this.fightersDetailsMap.get(fighter._id);
+
+		const MAX_VALUE = 100;
+		Swal.fire({
+			type: 'info',
+			title: 'Fighter settings',
+			html: `<div class="setupArea">
               <form class='settings'>
                 <div>
                   <p>Name: ${currentFighter.name}</p>
@@ -65,26 +65,26 @@ class FightersView extends View {
                     </div>
               </form>
             </div>`
-    }).then((result) => {
-      if (result.value) {
-        const form = document.querySelector('.settings');
+		}).then((result) => {
+			if (result.value) {
+				const form = document.querySelector('.settings') as HTMLFormElement;
 
-        for (let i = 0; i < form.elements.length; i++) {
-          const property = form.elements[i];
-          currentFighter[property.name] = property.value > MAX_VALUE ? MAX_VALUE : property.value;
-        }
+				for (let i = 0; i < form.elements.length; i++) {
+					const property: any = form.elements[i];
+					currentFighter[property.name] = property.value > MAX_VALUE ? MAX_VALUE : property.value;
+				}
 
-        this.fightersDetailsMap.set(currentFighter._id, currentFighter);
-      }
-    });
-  }
+				this.fightersDetailsMap.set(currentFighter._id, currentFighter);
+			}
+		});
+	}
 
-  async getFighter(_id) {
-    await this.setFighterDetails(_id);
-    const fighterDetails = this.fightersDetailsMap.get(_id);
-    
-    return new Fighter(fighterDetails);
-  }
+	async getFighter(_id: number | string) {
+		await this.setFighterDetails(_id);
+		const fighterDetails: IFighterDetails = this.fightersDetailsMap.get(_id);
+
+		return new Fighter(fighterDetails);
+	}
 }
 
 export default FightersView;

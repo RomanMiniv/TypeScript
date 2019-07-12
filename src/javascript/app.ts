@@ -1,149 +1,150 @@
-import FightersView from './fightersView';
-import { fighterService } from './services/fightersService';
-import Fight from './fight';
 import View from './view';
+import FightersView from './fightersView';
+import { fighterService, IFighterData } from './services/fightersService';
+import { IFighter } from './fighter';
+import Fight from './fight';
 import Swal from 'sweetalert2';
 
 class App {
-  game: any;
-  fighters: any;
-  constructor() {
-    this.startApp();
+	private game: any;
+	public fighters: IFighter[];
 
-    this.game;
-    this.fighters = [];
-  }
+	constructor() {
+		this.startApp();
 
-  static rootElement = document.getElementById('root');
+		this.game;
+		this.fighters = [];
+	}
 
-  static startElement = document.getElementById('start');
-  static playElement = document.getElementById('play');
+	static rootElement = document.getElementById('root') as HTMLElement;
 
-  static loadingElement = document.getElementById('loading-overlay');
-  static choiceFightersElement = document.getElementById('choiceFighters');
+	static startElement = document.getElementById('start') as HTMLElement;
+	static playElement = document.getElementById('play') as HTMLElement;
 
-  static fightElement = document.getElementById('fight');
+	static loadingElement = document.getElementById('loading-overlay') as HTMLElement;
+	static choiceFightersElement = document.getElementById('choiceFighters') as HTMLElement;
 
-  *gameProcess() {
-    this.redrawingScene(App.choiceFightersElement);
-    this.choiceFighters();
+	static fightElement = document.getElementById('fight') as HTMLElement;
 
-    yield 1;
-    this.redrawingScene(App.fightElement);
-    this.fight(this.fighters);
+	*gameProcess() {
+		this.redrawingScene(App.choiceFightersElement);
+		this.choiceFighters();
 
-    yield 2;
-    // start new game
-  }
+		yield 1;
+		this.redrawingScene(App.fightElement);
+		this.fight(this.fighters);
 
-  nextGameStage = () => {
-    const state = this.game.next();
+		yield 2;
+		// start new game
+	}
 
-    if (state.done) {
-      this.game = this.gameProcess();
-    }
-  }
+	nextGameStage = () => {
+		const state = this.game.next();
 
-  redrawingScene(activeScene: any) {
-    const rootSelector = `#${App.rootElement.getAttribute('id')}`;
-    const activeSceneSelector = `#${activeScene.getAttribute('id')}`;
+		if (state.done) {
+			this.game = this.gameProcess();
+		}
+	}
 
-    const inactiveScenes:any = document.querySelectorAll(`${rootSelector} > *:not(${activeSceneSelector})`);
+	redrawingScene(activeScene: any) {
+		const rootSelector = `#${App.rootElement.getAttribute('id')}`;
+		const activeSceneSelector = `#${activeScene.getAttribute('id')}`;
 
-    for (let i = 0; i < inactiveScenes.length; i++) {
-      inactiveScenes[i].style.display = 'none';
-    }
+		const inactiveScenes: any = document.querySelectorAll(`${rootSelector} > *:not(${activeSceneSelector})`);
 
-    activeScene.style.display = '';
-  }
+		for (let i = 0; i < inactiveScenes.length; i++) {
+			inactiveScenes[i].style.display = 'none';
+		}
 
-  startApp() {
-    try {
-      this.game = this.gameProcess();
+		activeScene.style.display = '';
+	}
 
-      this.redrawingScene(App.startElement);
-      App.playElement.addEventListener("click", this.nextGameStage);
-    } catch (error) {
-      console.warn(error);
-      throw error;
-    }
-  }
+	startApp() {
+		try {
+			this.game = this.gameProcess();
 
-  async choiceFighters() {
-    try {
-      App.loadingElement.style.visibility = 'visible';
+			this.redrawingScene(App.startElement);
+			App.playElement.addEventListener("click", this.nextGameStage);
+		} catch (error) {
+			console.warn(error);
+			throw error;
+		}
+	}
 
-      const view = new View();
+	async choiceFighters() {
+		try {
+			App.loadingElement.style.visibility = 'visible';
 
-      const titleElement = view.createElement({
-        tagName: 'h2'
-      });
-      titleElement.textContent = 'Choice fighter';
+			const view = new View();
 
-      const confirmChoiceElement = view.createElement({
-        tagName: 'button',
-        attributes: { id: 'confirmChoice' }
-      });
-      confirmChoiceElement.textContent = 'Confirm';
+			const titleElement = view.createElement({
+				tagName: 'h2'
+			});
+			titleElement.textContent = 'Choice fighter';
 
-      const fighters = await fighterService.getFighters();
-      const fightersView = new FightersView(fighters);
-      const fightersElement = fightersView.element;
+			const confirmChoiceElement = view.createElement({
+				tagName: 'button',
+				attributes: { id: 'confirmChoice' }
+			});
+			confirmChoiceElement.textContent = 'Confirm';
 
-      App.choiceFightersElement.append(titleElement, fightersElement, confirmChoiceElement);
+			const fighters: IFighterData[] = await fighterService.getFighters();
+			const fightersView = new FightersView(fighters);
+			const fightersElement = fightersView.element;
 
-      const selectedFighters = [];
-      confirmChoiceElement.addEventListener("click", async (event) => {
-        if (selectedFighters.length !== 2) {
-          Swal.fire({
-            type: 'info',
-            title: 'Choice two fighters!'
-          });
-          return;
-        }
+			App.choiceFightersElement.append(titleElement, fightersElement, confirmChoiceElement);
 
-        for (let i = 0; i < selectedFighters.length; i++) {
-          const fighter = await fightersView.getFighter(selectedFighters[i]);
-          this.fighters.push(fighter);
-        }
+			const selectedFighters: any[] = [];
+			confirmChoiceElement.addEventListener("click", async (event) => {
+				if (selectedFighters.length !== 2) {
+					Swal.fire({
+						type: 'info',
+						title: 'Choice two fighters!'
+					});
+					return;
+				}
 
-        this.nextGameStage();
-      });
+				for (let i = 0; i < selectedFighters.length; i++) {
+					const fighter: IFighter = await fightersView.getFighter(selectedFighters[i]);
+					this.fighters.push(fighter);
+				}
 
-      App.choiceFightersElement.addEventListener("change", (event) => {
-        const target:any = event.target;
-        const fighterId = target.value;
+				this.nextGameStage();
+			});
 
-        if (target.checked) {
-          if (selectedFighters.length === 2) {
-            Swal.fire({
-              type: 'info',
-              title: 'Choice only two fighters!'
-            });
-            target.checked = false;
-            return;
-          }
+			App.choiceFightersElement.addEventListener("change", (event) => {
+				const target: any = event.target;
+				const fighterId = target.value;
 
-          selectedFighters.push(fighterId);
-        } else {
-          const index = selectedFighters.indexOf(fighterId);
-          selectedFighters.splice(index, 1);
-        }
-      });
+				if (target.checked) {
+					if (selectedFighters.length === 2) {
+						Swal.fire({
+							type: 'info',
+							title: 'Choice only two fighters!'
+						});
+						target.checked = false;
+						return;
+					}
 
-    } catch (error) {
-      console.warn(error);
-      App.choiceFightersElement.innerText = 'Failed to load data';
-    } finally {
-      App.loadingElement.style.visibility = 'hidden';
-    }
-  }
+					selectedFighters.push(fighterId);
+				} else {
+					const index = selectedFighters.indexOf(fighterId);
+					selectedFighters.splice(index, 1);
+				}
+			});
 
-  fight(fighters) {
-    const fight = new Fight(fighters);
-    fight.start();
-  }
+		} catch (error) {
+			console.warn(error);
+			App.choiceFightersElement.innerText = 'Failed to load data';
+		} finally {
+			App.loadingElement.style.visibility = 'hidden';
+		}
+	}
 
+	fight(fighters: IFighter[]) {
+		const fight = new Fight(fighters);
+		fight.start();
+	}
 }
 
 export default App;
