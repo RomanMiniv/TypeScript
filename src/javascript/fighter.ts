@@ -6,19 +6,14 @@ function getRandomInt(min: number, max: number): number {
     return (Math.floor(Math.random() * (max - min)) + min);
 }
 
-export interface IFighter {
-    getHitPower: () => number;
-    getBlockPower: () => number;
-}
-
-class Fighter implements IFighter {
+class Fighter {
     private _data: IFighterDetails;
 
     public constructor(fighterDetails: IFighterDetails) {
         this._data = { ...fighterDetails };
     }
 
-    public get data() {
+    public get data(): IFighterDetails {
         return this._data;
     }
 

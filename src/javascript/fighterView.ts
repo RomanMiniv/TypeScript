@@ -1,36 +1,36 @@
 import View from './view';
 import { IFighterData } from './services/fightersService';
+import { THandleFighterClick } from './fightersView';
 
 class FighterView extends View {
-	constructor(fighter: IFighterData, handleClick: (event: any, fighter: IFighterData) => Promise<void>) {
+	public constructor(fighter: IFighterData, handleClick: THandleFighterClick) {
 		super();
-
 		this.createFighter(fighter, handleClick);
 	}
 
-	createFighter(fighter: IFighterData, handleClick: (event: any, fighter: IFighterData) => Promise<void>) {
+	private createFighter(fighter: IFighterData, handleClick: THandleFighterClick): void {
 		const { _id, name, source } = fighter;
-		const nameElement = this.createName(name);
-		const imageElement = this.createImage(source);
-		const checkboxElement = this.createCheckbox(_id);
-		const fighterElement = this.createElement({ tagName: 'div', className: 'fighter' });
+		const nameElement = <HTMLSpanElement>this.createName(name);
+		const imageElement = <HTMLImageElement>this.createImage(source);
+		const checkboxElement = <HTMLInputElement>this.createCheckbox(_id);
+		const fighterElement = <HTMLDivElement>this.createElement({ tagName: 'div', className: 'fighter' });
 
-		this.element = this.createElement({ tagName: 'div', className: 'fighterWrapper' });
+		this.element = <HTMLDivElement>this.createElement({ tagName: 'div', className: 'fighterWrapper' });
 
 		fighterElement.append(imageElement, nameElement);
-		fighterElement.addEventListener('click', (event: any) => handleClick(event, fighter), false);
+		fighterElement.addEventListener('click', (event: {}) => handleClick(event, fighter), false);
 
 		this.element.append(fighterElement, checkboxElement);
 	}
 
-	createName(name: string) {
+	private createName(name: string): HTMLElement {
 		const nameElement = this.createElement({ tagName: 'span', className: 'name' });
 		nameElement.innerText = name;
 
 		return nameElement;
 	}
 
-	createImage(source: string) {
+	private createImage(source: string): HTMLElement {
 		const attributes = { src: source };
 		const imgElement = this.createElement({
 			tagName: 'img',
@@ -41,7 +41,7 @@ class FighterView extends View {
 		return imgElement;
 	}
 
-	createCheckbox(_id: number | string) {
+	private createCheckbox(_id: number | string): HTMLElement {
 		const attributes = { name: 'choiceFighter', type: 'checkbox', value: _id };
 		const checkboxElement = this.createElement({
 			tagName: 'input',

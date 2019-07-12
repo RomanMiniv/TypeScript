@@ -4,39 +4,42 @@ import { fighterService, IFighterData, IFighterDetails } from './services/fighte
 import Fighter from './fighter';
 import Swal from 'sweetalert2';
 
+export type THandleFighterClick = (event: {}, fighter: IFighterData) => Promise<void>;
+
 class FightersView extends View {
-	fightersDetailsMap = new Map;
-	handleClick: (event: any, fighter: IFighterData) => Promise<void>;
-	constructor(fighters: IFighterData[]) {
+	private _fightersDetailsMap = new Map();
+	public handleClick: THandleFighterClick;
+
+	public constructor(fighters: IFighterData[]) {
 		super();
 
 		this.handleClick = this.handleFighterClick.bind(this);
-		this.createFighters(fighters);		
+		this.createFighters(fighters);
 	}
 
-	createFighters(fighters: IFighterData[]) {
-		const fighterElements = fighters.map(fighter => {
+	private createFighters(fighters: IFighterData[]): void {
+		const fighterElements: HTMLElement[] = fighters.map(fighter => {
 			const fighterView = new FighterView(fighter, this.handleClick);
 			return fighterView.element;
 		});
 
-		this.element = this.createElement({ tagName: 'div', className: 'fighters' });
+		this.element = <HTMLDivElement>this.createElement({ tagName: 'div', className: 'fighters' });
 		this.element.append(...fighterElements);
 	}
 
-	async setFighterDetails(_id: number | string) {
-		if (!this.fightersDetailsMap.has(_id)) {
+	private async setFighterDetails(_id: number | string): Promise<void> {
+		if (!this._fightersDetailsMap.has(_id)) {
 			const fighterDetails: IFighterDetails = await fighterService.getFighterDetails(_id);
-			this.fightersDetailsMap.set(_id, fighterDetails);
+			this._fightersDetailsMap.set(_id, fighterDetails);
 		}
 	}
 
-	async handleFighterClick(event: any, fighter: IFighterData): Promise<void> {
+	public async handleFighterClick(event: {}, fighter: IFighterData): Promise<void> {
 		await this.setFighterDetails(fighter._id);
 
-		const currentFighter = this.fightersDetailsMap.get(fighter._id);
+		const currentFighter = this._fightersDetailsMap.get(fighter._id);
 
-		const MAX_VALUE = 100;
+		const MAX_VALUE: number = 100;
 		Swal.fire({
 			type: 'info',
 			title: 'Fighter settings',
@@ -67,21 +70,21 @@ class FightersView extends View {
             </div>`
 		}).then((result) => {
 			if (result.value) {
-				const form = document.querySelector('.settings') as HTMLFormElement;
+				const form = <HTMLFormElement>document.querySelector('.settings');
 
 				for (let i = 0; i < form.elements.length; i++) {
-					const property: any = form.elements[i];
-					currentFighter[property.name] = property.value > MAX_VALUE ? MAX_VALUE : property.value;
+					const property = <HTMLInputElement>form.elements[i];
+					currentFighter[property.name] = +property.value > MAX_VALUE ? MAX_VALUE : property.value;
 				}
 
-				this.fightersDetailsMap.set(currentFighter._id, currentFighter);
+				this._fightersDetailsMap.set(currentFighter._id, currentFighter);
 			}
 		});
 	}
 
-	async getFighter(_id: number | string) {
+	public async getFighter(_id: number | string): Promise<Fighter> {
 		await this.setFighterDetails(_id);
-		const fighterDetails: IFighterDetails = this.fightersDetailsMap.get(_id);
+		const fighterDetails: IFighterDetails = this._fightersDetailsMap.get(_id);
 
 		return new Fighter(fighterDetails);
 	}

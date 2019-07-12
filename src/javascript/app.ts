@@ -6,27 +6,27 @@ import Fight from './fight';
 import Swal from 'sweetalert2';
 
 class App {
-	private game: any;
+	public _game: any;
 	public fighters: Fighter[];
 
-	constructor() {
-		this.startApp();
-
-		this.game;
+	public constructor() {
+		this._game;
 		this.fighters = [];
+
+		this.startApp();
 	}
 
-	static rootElement = document.getElementById('root') as HTMLElement;
+	static rootElement = <HTMLDivElement>document.getElementById('root');
 
-	static startElement = document.getElementById('start') as HTMLElement;
-	static playElement = document.getElementById('play') as HTMLElement;
+	static startElement = <HTMLDivElement>document.getElementById('start');
+	static playElement = <HTMLButtonElement>document.getElementById('play');
 
-	static loadingElement = document.getElementById('loading-overlay') as HTMLElement;
-	static choiceFightersElement = document.getElementById('choiceFighters') as HTMLElement;
+	static loadingElement = <HTMLDivElement>document.getElementById('loading-overlay');
+	static choiceFightersElement = <HTMLDivElement>document.getElementById('choiceFighters');
 
-	static fightElement = document.getElementById('fight') as HTMLElement;
+	static fightElement = <HTMLDivElement>document.getElementById('fight');
 
-	*gameProcess() {
+	private *gameProcess() {
 		this.redrawingScene(App.choiceFightersElement);
 		this.choiceFighters();
 
@@ -38,17 +38,17 @@ class App {
 		// start new game
 	}
 
-	nextGameStage = () => {
-		const state = this.game.next();
+	private nextGameStage = () => {
+		const state = this._game.next();
 
 		if (state.done) {
-			this.game = this.gameProcess();
+			this._game = this.gameProcess();
 		}
 	}
 
-	redrawingScene(activeScene: any) {
-		const rootSelector = `#${App.rootElement.getAttribute('id')}`;
-		const activeSceneSelector = `#${activeScene.getAttribute('id')}`;
+	private redrawingScene(activeScene: HTMLDivElement): void {
+		const rootSelector: string = `#${App.rootElement.getAttribute('id')}`;
+		const activeSceneSelector: string = `#${activeScene.getAttribute('id')}`;
 
 		const inactiveScenes: any = document.querySelectorAll(`${rootSelector} > *:not(${activeSceneSelector})`);
 
@@ -59,9 +59,9 @@ class App {
 		activeScene.style.display = '';
 	}
 
-	startApp() {
+	private startApp(): void {
 		try {
-			this.game = this.gameProcess();
+			this._game = this.gameProcess();
 
 			this.redrawingScene(App.startElement);
 			App.playElement.addEventListener("click", this.nextGameStage);
@@ -71,18 +71,18 @@ class App {
 		}
 	}
 
-	async choiceFighters() {
+	private async choiceFighters(): Promise<void> {
 		try {
 			App.loadingElement.style.visibility = 'visible';
 
 			const view = new View();
 
-			const titleElement = view.createElement({
+			const titleElement = <HTMLHeadingElement>view.createElement({
 				tagName: 'h2'
 			});
 			titleElement.textContent = 'Choice fighter';
 
-			const confirmChoiceElement = view.createElement({
+			const confirmChoiceElement = <HTMLButtonElement>view.createElement({
 				tagName: 'button',
 				attributes: { id: 'confirmChoice' }
 			});
@@ -94,8 +94,8 @@ class App {
 
 			App.choiceFightersElement.append(titleElement, fightersElement, confirmChoiceElement);
 
-			const selectedFighters: any[] = [];
-			confirmChoiceElement.addEventListener("click", async (event) => {
+			const selectedFighters: string[] = [];
+			confirmChoiceElement.addEventListener("click", async (event: {}) => {
 				if (selectedFighters.length !== 2) {
 					Swal.fire({
 						type: 'info',
@@ -113,7 +113,7 @@ class App {
 			});
 
 			App.choiceFightersElement.addEventListener("change", (event) => {
-				const target: any = event.target;
+				const target = <HTMLInputElement>event.target;
 				const fighterId = target.value;
 
 				if (target.checked) {
@@ -141,7 +141,7 @@ class App {
 		}
 	}
 
-	fight(fighters: Fighter[]) {
+	private fight(fighters: Fighter[]): void {
 		const fight = new Fight(fighters);
 		fight.start();
 	}

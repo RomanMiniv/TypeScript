@@ -5,10 +5,9 @@ interface IElementData {
 }
 
 class View {
-	element: any;
+	public element: any;
 
-	// createElement({ tagName: string, className = '', attributes = {} }): HTMLElement {
-	createElement({ tagName, className = '', attributes = {} }: IElementData): HTMLElement {
+	public createElement({ tagName, className = '', attributes = {} }: IElementData): HTMLElement {
 		const element = document.createElement(tagName);
 
 		if (className) {
